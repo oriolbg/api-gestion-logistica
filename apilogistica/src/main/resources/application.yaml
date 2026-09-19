@@ -1,0 +1,58 @@
+spring:
+  application:
+    name: apilogistica
+
+  #Especificaciones de la conexion a la base de datos
+  #https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  datasource:
+    url: jdbc:mysql://localhost:3306/gestionlogistica?serverTimezone=Europe/Madrid
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+# Server
+server:
+  port: 9090
+  #Para ver los endpoints en Swagger, usar la URL: http://localhost:9090/swagger-ui/
+
+#Open API
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+
+  packages-to-scan:
+    - erp.gestion.apilogistica.controller
+
+  paths-to-match:
+    - /**
+
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    try-it-out-enabled: true
+    operations-sorter: method
+    tags-sorter: alpha
+    filter: true
+    doc-expansion: none
+
+# Logging
+logging:
+  level:
+    root: ${LOG_LEVEL_ROOT:DEBUG}
+    erp.gestion.apilogistica: ${LOG_LEVEL_APP:DEBUG}
+    org.springframework: ${LOG_LEVEL_WEB:DEBUG}
+    org.springframework.web: ${LOG_LEVEL_WEB:DEBUG}
+    org.springframework.data: ${LOG_LEVEL_DATA:DEBUG}
+    org.hibernate.SQL: ${LOG_LEVEL_SQL:DEBUG}
+    org.hibernate.type.descriptor.sql.BasicBinder: ${LOG_LEVEL_SQL_PARAMS:TRACE}
+
+#debug: true
