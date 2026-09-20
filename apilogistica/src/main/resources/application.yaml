@@ -47,10 +47,10 @@ springdoc:
 # Logging
 logging:
   level:
-    root: ${LOG_LEVEL_ROOT:DEBUG}
+    root: ${LOG_LEVEL_ROOT:INFO}
     erp.gestion.apilogistica: ${LOG_LEVEL_APP:DEBUG}
-    org.springframework: ${LOG_LEVEL_WEB:DEBUG}
-    org.springframework.web: ${LOG_LEVEL_WEB:DEBUG}
+    org.springframework: ${LOG_LEVEL_WEB:INFO}
+    org.springframework.web: ${LOG_LEVEL_WEB:INFO}
     org.springframework.data: ${LOG_LEVEL_DATA:DEBUG}
     org.hibernate.SQL: ${LOG_LEVEL_SQL:DEBUG}
     org.hibernate.type.descriptor.sql.BasicBinder: ${LOG_LEVEL_SQL_PARAMS:TRACE}
