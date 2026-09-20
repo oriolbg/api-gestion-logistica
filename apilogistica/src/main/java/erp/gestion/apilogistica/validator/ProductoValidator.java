@@ -19,7 +19,7 @@ public class ProductoValidator {
             throw new ValidateException("El precio unitario debe ser mayor o igual que cero");
         }
         if (registro.getCodImp() == null || registro.getCodImp().trim().isEmpty()) {
-            throw new ValidateException("El codigo de impueso es requerido");
+            throw new ValidateException("El codigo de impuesto es requerido");
         }
     }
 }

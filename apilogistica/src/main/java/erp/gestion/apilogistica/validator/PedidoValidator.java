@@ -62,7 +62,7 @@ public class PedidoValidator {
 		 //Validar coherencia --> precioUnitario * cantidad = subtotal
 		 BigDecimal subtotalEsperado = pedidoDetalle.getPrecioUnitario().multiply(new BigDecimal(pedidoDetalle.getCantidad()));
 		 if(pedidoDetalle.getSubtotal().compareTo(subtotalEsperado) != 0) {
-			 throw new ValidateException("LEl subtotla del detalle no coincide con cantidad * precio unitario"); 
+			 throw new ValidateException("El subtotal del detalle no coincide con cantidad * precio unitario");
 		 }
 	}
 }

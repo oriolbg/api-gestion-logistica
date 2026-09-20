@@ -12,7 +12,7 @@ public class ClienteValidator {
 	        if (registro.getNumeroDocumento() == null || registro.getNumeroDocumento().trim().isEmpty()) {
 	            throw new ValidateException("El numero de documento es requerido");
 	        }
-	        if (registro.getTipoDocumento() == null) {
+	        if (registro.getDescripcionDocumento() == null  || registro.getDescripcionDocumento().trim().isEmpty()) {
 	            throw new ValidateException("El tipo de documento es requerido");
 	        }
 	    }

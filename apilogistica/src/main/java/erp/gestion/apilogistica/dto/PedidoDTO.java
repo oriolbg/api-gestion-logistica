@@ -18,7 +18,7 @@ public class PedidoDTO {
     private LocalDate fecha;
     private Long clienteId;
     private String clienteNombre;
-    private String productodNombre;
+    private String productoNombre;
     private String tipoComprobanteCodigo;
     private String tipoComprobanteDescripcion;
     private String serie;
