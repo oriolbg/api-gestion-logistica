@@ -3,8 +3,10 @@ package erp.gestion.apilogistica.controller;
 
 
 import erp.gestion.apilogistica.dto.UsuarioDTO;
+import erp.gestion.apilogistica.dto.UsuarioLoginDTO;
 import erp.gestion.apilogistica.dto.WrapperResponse;
 import erp.gestion.apilogistica.service.UsuarioService;
+import erp.gestion.apilogistica.util.MapperUtil;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -20,8 +22,11 @@ public class UsuarioController {
 	
     private final UsuarioService service;
 
-    public UsuarioController(UsuarioService service){
+    private MapperUtil mapperUtil;
+
+    public UsuarioController(UsuarioService service, MapperUtil mapperUtil){
         this.service=service;
+        this.mapperUtil = mapperUtil;
     }
 
     @PreAuthorize("hasRole('ADMIN')")//Requiere rol de ADMIN
@@ -44,9 +49,9 @@ public class UsuarioController {
     }
 
     @PostMapping
-    public ResponseEntity<WrapperResponse<UsuarioDTO>> create(@Valid @RequestBody UsuarioDTO obj){
-    	UsuarioDTO created = service.create(obj);
-        return new WrapperResponse<>(created, true, "success").createResponse(HttpStatus.CREATED);
+    public ResponseEntity<WrapperResponse<UsuarioLoginDTO>> create(@Valid @RequestBody UsuarioDTO obj){
+        UsuarioDTO created = service.create(obj);
+        return new WrapperResponse<>(mapperUtil.secureCreateUserLogin(created), true, "success").createResponse(HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasRole('ADMIN')")

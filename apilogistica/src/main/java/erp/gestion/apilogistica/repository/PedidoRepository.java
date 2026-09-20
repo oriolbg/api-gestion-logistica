@@ -12,6 +12,6 @@ public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 	
 	Page<Pedido> findByFechaBetween(Pageable pageable, LocalDate fechaInicio, LocalDate fechaFin);
 
-	Page<Pedido> findByCorrelativoContainingIgnoreCase(Pageable pageable, String nombre);
+	Page<Pedido> findByCorrelativo(Pageable pageable, String nombre);
     
 }

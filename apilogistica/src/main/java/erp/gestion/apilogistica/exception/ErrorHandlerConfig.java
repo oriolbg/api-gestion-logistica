@@ -2,7 +2,6 @@ package erp.gestion.apilogistica.exception;
 
 
 import erp.gestion.apilogistica.dto.WrapperResponse;
-import jakarta.validation.ValidationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -23,7 +22,7 @@ public class ErrorHandlerConfig extends ResponseEntityExceptionHandler{
 	}
 	
 	@ExceptionHandler(ValidateException.class)
-	public ResponseEntity<?> validation(ValidationException e, WebRequest request){
+	public ResponseEntity<?> validation(ValidateException e, WebRequest request){
 		WrapperResponse<?> response = new WrapperResponse<>(null, false, e.getMessage());
 		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
@@ -31,7 +30,7 @@ public class ErrorHandlerConfig extends ResponseEntityExceptionHandler{
 	@ExceptionHandler(NoDataFoundException.class)
 	public ResponseEntity<?> noData(NoDataFoundException e, WebRequest request){
 		WrapperResponse<?> response = new WrapperResponse<>(null, false, e.getMessage());
-		return new ResponseEntity<>(response, HttpStatus.NO_CONTENT);
+		return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 	}
 	
 	@ExceptionHandler(GeneralException.class)

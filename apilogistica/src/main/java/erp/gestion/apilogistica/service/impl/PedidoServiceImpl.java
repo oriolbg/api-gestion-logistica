@@ -33,7 +33,7 @@ public class PedidoServiceImpl implements PedidoService {
     public Page<PedidoDTO> findAll(Pageable pageable, String search) {
         Page<Pedido> pedidos = (search==null || search.trim().isEmpty())
 				            ? repository.findAll(pageable)
-				            : repository.findByCorrelativoContainingIgnoreCase(pageable, search);
+				            : repository.findByCorrelativo(pageable, search);
      
         return pedidos.map(mapper::toDTO);
     }
