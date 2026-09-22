@@ -1,60 +1,32 @@
 package erp.gestion.apilogistica.mapper;
 
-
 import erp.gestion.apilogistica.dto.RolDTO;
 import erp.gestion.apilogistica.dto.UsuarioDTO;
 import erp.gestion.apilogistica.entity.Rol;
 import erp.gestion.apilogistica.entity.Usuario;
-import org.springframework.stereotype.Component;
+import org.mapstruct.*;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+@Mapper(
+        config = CentralMapperConfig.class,
+        builder = @Builder(disableBuilder = true) // Desactiva el builder para tratar la entidad de forma homogénea
+)
+public interface UsuarioMapper extends GenericMapper<Usuario, UsuarioDTO> {
 
-@Component
-public class UsuarioMapper extends GenericMapper<Usuario, UsuarioDTO>{
+    @Override
+    @Mapping(target = "password", ignore = true) // Seguridad: no exponer el hash al DTO
+    UsuarioDTO toDTO(Usuario entity);
 
-	@Override
-	public UsuarioDTO toDTO(Usuario entity) {
-		 if (entity == null) {
-	            return null;
-	        }
-	     
-		 List<RolDTO> rolesDto = entity.getRoles().stream()
-				 .map(rol -> new RolDTO(rol.getId(), rol.getNombre()))
-				 .collect(Collectors.toList());
-		 
-		 return UsuarioDTO.builder()
-				 .id(entity.getId())
-				 .email(entity.getEmail())
-				 .activo(entity.isActivo())
-				 .roles(rolesDto)
-				 .build();
-	}
+    @Override
+    @Mapping(target = "authorities", ignore = true) // Ignora la colección calculada de UserDetails
+    Usuario toEntity(UsuarioDTO dto);
 
-	@Override
-	public Usuario toEntity(UsuarioDTO dto) {
-		 if(dto==null){
-	            return null;
-	        }
-		 
-		 Set<Rol> roles = dto.getRoles()!=null ? dto.getRoles().stream()
-				.map(rolDto -> Rol.builder()
-						.id(rolDto.getId())
-						.nombre(rolDto.getNombre())
-						.build()
-				)
-				.collect(Collectors.toSet())
-				: new HashSet<>();
-		 
-		 return Usuario.builder()
-				 .id(dto.getId())
-				 .email(dto.getEmail())
-				 .password(dto.getPassword())
-				 .activo(dto.isActivo())
-				 .roles(roles)
-				 .build();
-	}
+    @Override
+    @InheritConfiguration(name = "toEntity") // Hereda automáticamente el ignore de "authorities"
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "password", ignore = true) // La contraseña se cifra en el Service
+    void updateEntityFromDto(UsuarioDTO dto, @MappingTarget Usuario entity);
 
+    // Mapeos auxiliares de colección Set<Rol> <-> List<RolDTO>
+    RolDTO toRolDto(Rol rol);
+    Rol toRolEntity(RolDTO rolDto);
 }

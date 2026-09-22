@@ -53,17 +53,9 @@ public class ClienteServiceImpl implements ClienteService {
     public ClienteDTO update(Long id, ClienteDTO obj) {
         // Buscar el cliente existente
         Cliente entidad = repository.findById(id).orElseThrow(() -> new NoDataFoundException("No existe un registro con ese ID"));
-     
-        // Convertir DTO a entidad temporal para obtener valores convertidos
-        Cliente datosNuevos = mapper.toEntity(obj);
-     
-        // Copiar campos a la entidad existente
-        entidad.setNombre(datosNuevos.getNombre());
-        entidad.setTipoDocumento(datosNuevos.getTipoDocumento());
-        entidad.setNumeroDocumento(datosNuevos.getNumeroDocumento());
-        entidad.setDireccion(datosNuevos.getDireccion());
-        entidad.setTelefono(datosNuevos.getTelefono());
-        entidad.setEmail(datosNuevos.getEmail());
+
+        // MapStruct actualiza los campos in-place respetando el ID y optimizando el ciclo de vida JPA
+        mapper.updateEntityFromDto(obj, entidad);
      
         Cliente saved = repository.save(entidad);
         return mapper.toDTO(saved);

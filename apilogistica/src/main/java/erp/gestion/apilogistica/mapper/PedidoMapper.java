@@ -1,74 +1,43 @@
 package erp.gestion.apilogistica.mapper;
 
-
 import erp.gestion.apilogistica.dto.PedidoDTO;
-import erp.gestion.apilogistica.entity.Cliente;
 import erp.gestion.apilogistica.entity.Pedido;
-import erp.gestion.apilogistica.entity.TipoComprobante;
-import org.springframework.stereotype.Component;
+import org.mapstruct.*;
 
-import java.util.stream.Collectors;
+@Mapper(config = CentralMapperConfig.class, uses = {PedidoDetalleMapper.class})
+public interface PedidoMapper extends GenericMapper<Pedido, PedidoDTO> {
 
-@Component
-public class PedidoMapper extends GenericMapper<Pedido, PedidoDTO>{
-	
-	private final PedidoDetalleMapper detalleMapper = new PedidoDetalleMapper();
+    @Override
+    @Mapping(target = "clienteId", source = "cliente.id")
+    @Mapping(target = "clienteNombre", source = "cliente.nombre")
+    @Mapping(target = "tipoComprobanteCodigo", source = "tipoComprobante.codigo")
+    @Mapping(target = "tipoComprobanteDescripcion", source = "tipoComprobante.descripcion")
+    @Mapping(target = "productoNombre", ignore = true) // Campo sobrante detectado en PedidoDTO
+    PedidoDTO toDTO(Pedido entity);
 
-	@Override
-	public PedidoDTO toDTO(Pedido entity) {
-		 if (entity == null) {
-	            return null;
-	        }
-	        return PedidoDTO.builder()
-	                .id(entity.getId())
-	                .fecha(entity.getFecha())
-	                .clienteId(entity.getCliente() != null ? entity.getCliente().getId() : null)
-	                .clienteNombre(entity.getCliente() != null ? entity.getCliente().getNombre() : null)
-	                .tipoComprobanteCodigo(entity.getTipoComprobante() != null ? entity.getTipoComprobante().getCodigo() : null)
-	                .tipoComprobanteDescripcion(entity.getTipoComprobante() != null ? entity.getTipoComprobante().getDescripcion() : null)
-	                .serie(entity.getSerie())
-	                .correlativo(entity.getCorrelativo())
-	                .total(entity.getTotal())
-	                .detalles(entity.getDetalles() != null ? entity.getDetalles().stream()
-	                		.map(detalleMapper::toDTO)
-	                		.collect(Collectors.toList())
-	                		: null)
-	                .build();
-	}
+    @Override
+    @Mapping(target = "cliente.id", source = "clienteId")
+    @Mapping(target = "cliente.nombre", ignore = true)
+    @Mapping(target = "cliente.tipoDocumento", ignore = true)
+    @Mapping(target = "cliente.numeroDocumento", ignore = true)
+    @Mapping(target = "cliente.direccion", ignore = true)
+    @Mapping(target = "cliente.telefono", ignore = true)
+    @Mapping(target = "cliente.email", ignore = true)
+    @Mapping(target = "tipoComprobante.codigo", source = "tipoComprobanteCodigo")
+    @Mapping(target = "tipoComprobante.descripcion", ignore = true)
+    Pedido toEntity(PedidoDTO dto);
 
-	@Override
-	public Pedido toEntity(PedidoDTO dto) {
-		 if(dto==null){
-	            return null;
-	        }
-		 Pedido pedido = Pedido.builder()
-	                .id(dto.getId())
-	                .serie(dto.getSerie())
-	                .correlativo(dto.getCorrelativo())
-	                .total(dto.getTotal())
-	                .build();
-		 
-		 if(dto.getClienteId() != null) {
-			 Cliente cliente = new Cliente();
-			 cliente.setId(dto.getClienteId());
-			 pedido.setCliente(cliente);
-		 }
-		 
-		 if(dto.getTipoComprobanteCodigo() != null) {
-			 TipoComprobante tipo = new TipoComprobante();
-			 tipo.setCodigo(dto.getTipoComprobanteCodigo());
-			 pedido.setTipoComprobante(tipo);
-		 }
-		 
-		 if(dto.getDetalles() != null) {
-			 pedido.setDetalles(dto.getDetalles().stream()
-					 .map(detalleMapper::toEntity)
-					 .collect(Collectors.toList()));
-			 
-			 pedido.getDetalles().forEach(d -> d.setPedido(pedido));
-		 }
-		 
-		 return pedido;
-	}
+    @Override
+    @InheritConfiguration(name = "toEntity")
+    @Mapping(target = "id", ignore = true)
+    @Mapping(target = "fecha", ignore = true)
+    void updateEntityFromDto(PedidoDTO dto, @MappingTarget Pedido entity);
 
+    // Mantiene la consistencia bidireccional JPA sin código duplicado en el Service
+    @AfterMapping
+    default void vincularDetalles(@MappingTarget Pedido pedido) {
+        if (pedido.getDetalles() != null) {
+            pedido.getDetalles().forEach(detalle -> detalle.setPedido(pedido));
+        }
+    }
 }

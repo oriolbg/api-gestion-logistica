@@ -34,6 +34,10 @@ public class ProductoDTO {
     @NotBlank(message = "El código de impuesto es requerido")
     private String codImp;
 
+    @NotNull(message = "El precio base es requerido")
+    @PositiveOrZero(message = "El precio base debe ser mayor o igual que cero")
+    private BigDecimal precioBase;
+
     @NotNull(message = "El precio unitario es requerido")
     @PositiveOrZero(message = "El precio unitario debe ser mayor o igual que cero")
     private BigDecimal precioUnitario;

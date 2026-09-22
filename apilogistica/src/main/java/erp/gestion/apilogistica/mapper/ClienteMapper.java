@@ -1,44 +1,43 @@
 package erp.gestion.apilogistica.mapper;
 
-
 import erp.gestion.apilogistica.dto.ClienteDTO;
 import erp.gestion.apilogistica.entity.Cliente;
 import erp.gestion.apilogistica.entity.TipoDocumento;
-import org.springframework.stereotype.Component;
+import org.mapstruct.*;
 
-@Component
-public class ClienteMapper extends GenericMapper<Cliente, ClienteDTO>{
+import java.util.Arrays;
 
-	@Override
-	public ClienteDTO toDTO(Cliente entity) {
-		 if (entity == null) {
-	            return null;
-	        }
-	        return ClienteDTO.builder()
-	                .id(entity.getId())
-	                .nombre(entity.getNombre())
-	                .descripcionDocumento(entity.getTipoDocumento().getDescripcion())
-	                .numeroDocumento(entity.getNumeroDocumento())
-	                .direccion(entity.getDireccion())
-	                .telefono(entity.getTelefono())
-	                .email(entity.getEmail())
-	                .build();
-	}
+@Mapper(config = CentralMapperConfig.class)
+public interface ClienteMapper extends GenericMapper<Cliente, ClienteDTO> {
 
-	@Override
-	public Cliente toEntity(ClienteDTO dto) {
-		 if(dto==null){
-	            return null;
-	        }
-		 return Cliente.builder()
-	                .id(dto.getId())
-	                .nombre(dto.getNombre())
-	                .tipoDocumento(dto.getDescripcionDocumento() != null ? TipoDocumento.valueOf(dto.getDescripcionDocumento()) : null)
-	                .numeroDocumento(dto.getNumeroDocumento())
-	                .direccion(dto.getDireccion())
-	                .telefono(dto.getTelefono())
-	                .email(dto.getEmail())
-	                .build();
-	}
+    @Override
+    @Mapping(target = "descripcionDocumento", source = "tipoDocumento", qualifiedByName = "tipoDocumentoToString")
+    ClienteDTO toDTO(Cliente entity);
 
+    @Override
+    @InheritInverseConfiguration
+    @Mapping(target = "tipoDocumento", source = "descripcionDocumento", qualifiedByName = "stringToTipoDocumento")
+    Cliente toEntity(ClienteDTO dto);
+
+    @Override
+    @InheritConfiguration(name = "toEntity")
+    @Mapping(target = "id", ignore = true) // El ID de la entidad existente no debe sobreescribirse
+    void updateEntityFromDto(ClienteDTO dto, @MappingTarget Cliente entity);
+
+    // Mapeos controlados y seguros para el Enum:
+    @Named("tipoDocumentoToString")
+    default String tipoDocumentoToString(TipoDocumento tipo) {
+        return tipo != null ? tipo.getDescripcion() : null;
+    }
+
+    @Named("stringToTipoDocumento")
+    default TipoDocumento stringToTipoDocumento(String descripcion) {
+        if (descripcion == null || descripcion.isBlank()) {
+            return null;
+        }
+        return Arrays.stream(TipoDocumento.values())
+                .filter(td -> td.name().equalsIgnoreCase(descripcion) || td.getDescripcion().equalsIgnoreCase(descripcion))
+                .findFirst()
+                .orElse(null);
+    }
 }

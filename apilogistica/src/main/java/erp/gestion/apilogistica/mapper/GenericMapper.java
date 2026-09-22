@@ -1,21 +1,15 @@
 package erp.gestion.apilogistica.mapper;
 
+import org.mapstruct.MappingTarget;
+
 import java.util.List;
-import java.util.stream.Collectors;
 
-public abstract class GenericMapper<E, D> {
-    public abstract D toDTO(E entity);
-    public abstract E toEntity(D dto);
+public interface GenericMapper<E, D> {
+    D toDTO(E entity);
+    E toEntity(D dto);
+    List<D> toDTO(List<E> entities);
+    List<E> toEntity(List<D> dtos);
 
-    public List<D> toDTO(List<E> entitys){
-        return entitys.stream()
-                .map(e -> toDTO(e))
-                .collect(Collectors.toList());
-    }
-
-    public List<E> toEntity(List<D> dtos){
-        return dtos.stream()
-                .map(d -> toEntity(d))
-                .collect(Collectors.toList());
-    }
+    // Soporte nativo para actualizaciones sin instanciar objetos temporales
+    void updateEntityFromDto(D dto, @MappingTarget E entity);
 }
