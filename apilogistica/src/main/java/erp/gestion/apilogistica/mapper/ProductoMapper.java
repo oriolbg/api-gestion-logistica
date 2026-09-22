@@ -18,7 +18,6 @@ public interface ProductoMapper extends GenericMapper<Producto, ProductoDTO> {
     @Override
     @Mapping(target = "unidad.id", source = "unidadId")
     @Mapping(target = "unidad.descripcion", ignore = true)
-    @Mapping(target = "precioBase", source = "precioUnitario") // Se corrige el campo omitido usando valor por defecto
     @Mapping(target = "observaciones", ignore = true)           // Explicitamos que es opcional/ignorado
     Producto toEntity(ProductoDTO dto);
 

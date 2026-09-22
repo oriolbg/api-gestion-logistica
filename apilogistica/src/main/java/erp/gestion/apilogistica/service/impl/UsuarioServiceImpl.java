@@ -62,18 +62,10 @@ public class UsuarioServiceImpl implements UsuarioService {
     public UsuarioDTO update(Integer id, UsuarioDTO obj) {
      
         Usuario entidad = repository.findById(id).orElseThrow(() -> new NoDataFoundException("No existe un registro con ese ID"));
-     
-        Usuario datosNuevos = mapper.toEntity(obj);
-     
-        // Actualizar campos directamente en la entidad existente
-        entidad.setEmail(datosNuevos.getEmail());
-        entidad.setActivo(datosNuevos.isActivo());
-        entidad.setRoles(datosNuevos.getRoles());
-     
+        mapper.updateEntityFromDto(obj, entidad);
         if (obj.getPassword() != null && !obj.getPassword().isEmpty()) {
             entidad.setPassword(passwordEncoder.encode(obj.getPassword()));
         }
-     
         Usuario saved = repository.save(entidad);
         return mapper.toDTO(saved);
     }

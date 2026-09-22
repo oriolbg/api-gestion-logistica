@@ -50,8 +50,7 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     public ProductoDTO create(ProductoDTO obj) {
-    	Unidad unidad = unidadRepository.findById(obj.getUnidadId())
-    			.orElseThrow(() -> new ValidateException("La unidad especificada no existe"));
+    	Unidad unidad = unidadRepository.findById(obj.getUnidadId()).orElseThrow(() -> new ValidateException("La unidad especificada no existe"));
     	Producto entidad = mapper.toEntity(obj);
     	entidad.setUnidad(unidad);
     	Producto saved = repository.save(entidad);
@@ -61,14 +60,7 @@ public class ProductoServiceImpl implements ProductoService {
     @Override
     public ProductoDTO update(Long id, ProductoDTO obj) {
     	Producto entidad = repository.findById(id).orElseThrow(() -> new NoDataFoundException("No existe un registro con ese ID"));
-    	Unidad unidad = unidadRepository.findById(obj.getUnidadId())
-    			.orElseThrow(() -> new ValidateException("La unidad especificada no existe"));
-    	
-    	entidad.setCodigo(obj.getCodigo());
-    	entidad.setDescripcion(obj.getDescripcion());
-    	entidad.setPrecioUnitario(obj.getPrecioUnitario());
-    	entidad.setUnidad(unidad);
-
+        mapper.updateEntityFromDto(obj, entidad);
         Producto saved = repository.save(entidad);
         return mapper.toDTO(saved);
 

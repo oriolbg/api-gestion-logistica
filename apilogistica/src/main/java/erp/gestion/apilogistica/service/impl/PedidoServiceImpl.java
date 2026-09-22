@@ -63,23 +63,20 @@ public class PedidoServiceImpl implements PedidoService {
     @Override
     public PedidoDTO update(Long id, PedidoDTO obj) {
         pedidoValidator.validarSubtotalesDetalle(obj);
-     
-        // Buscar el pedido existente y guardar la fecha original
-        Pedido pedidoExistente = repository.findById(id).orElseThrow(() -> new NoDataFoundException("No existe un registro con ese ID"));
 
-        // Convertir DTO a Nueva Entidad para actualizar datos
-        Pedido entidad = mapper.toEntity(obj);
+        // 1. Buscar el pedido existente
+        Pedido entidad = repository.findById(id).orElseThrow(() -> new NoDataFoundException("No existe un registro con ese ID"));
 
-        // Calcular total
+        // 2. MapStruct actualiza in-place cliente, tipoComprobante, serie, correlativo
+        mapper.updateEntityFromDto(obj, entidad);
+
+        // 3. Calcular el total del pedido
         BigDecimal total = obj.getDetalles().stream()
                 .map(item -> item.getPrecioUnitario().multiply(BigDecimal.valueOf(item.getCantidad())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+        entidad.setTotal(total);
 
-        //Actualizar pedido existente
-        pedidoExistente.setDetalles(entidad.getDetalles());
-        pedidoExistente.setTotal(total);
-     
-        Pedido saved = repository.save(pedidoExistente);
+        Pedido saved = repository.save(entidad);
         return mapper.toDTO(saved);
     }
 
