@@ -8,7 +8,6 @@ import erp.gestion.apilogistica.exception.NoDataFoundException;
 import erp.gestion.apilogistica.mapper.ClienteMapper;
 import erp.gestion.apilogistica.repository.ClienteRepository;
 import erp.gestion.apilogistica.service.ClienteService;
-import erp.gestion.apilogistica.validator.ClienteValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -45,7 +44,6 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     public ClienteDTO create(ClienteDTO obj) {
-    	ClienteValidator.save(obj);
     	Cliente entidad = mapper.toEntity(obj);
     	Cliente saved = repository.save(entidad);
         return mapper.toDTO(saved);
@@ -53,7 +51,6 @@ public class ClienteServiceImpl implements ClienteService {
 
     @Override
     public ClienteDTO update(Long id, ClienteDTO obj) {
-        ClienteValidator.save(obj);
         // Buscar el cliente existente
         Cliente entidad = repository.findById(id).orElseThrow(() -> new NoDataFoundException("No existe un registro con ese ID"));
      

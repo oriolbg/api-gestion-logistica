@@ -11,7 +11,6 @@ import erp.gestion.apilogistica.mapper.ProductoMapper;
 import erp.gestion.apilogistica.repository.ProductoRepository;
 import erp.gestion.apilogistica.repository.UnidadRepository;
 import erp.gestion.apilogistica.service.ProductoService;
-import erp.gestion.apilogistica.validator.ProductoValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -51,7 +50,6 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     public ProductoDTO create(ProductoDTO obj) {
-    	ProductoValidator.save(obj);
     	Unidad unidad = unidadRepository.findById(obj.getUnidadId())
     			.orElseThrow(() -> new ValidateException("La unidad especificada no existe"));
     	Producto entidad = mapper.toEntity(obj);
@@ -62,7 +60,6 @@ public class ProductoServiceImpl implements ProductoService {
 
     @Override
     public ProductoDTO update(Long id, ProductoDTO obj) {
-    	ProductoValidator.save(obj);
     	Producto entidad = repository.findById(id).orElseThrow(() -> new NoDataFoundException("No existe un registro con ese ID"));
     	Unidad unidad = unidadRepository.findById(obj.getUnidadId())
     			.orElseThrow(() -> new ValidateException("La unidad especificada no existe"));

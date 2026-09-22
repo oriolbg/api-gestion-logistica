@@ -22,10 +22,12 @@ public class PedidoServiceImpl implements PedidoService {
     
 	private final PedidoRepository repository;
     private final PedidoMapper mapper;
+    private final PedidoValidator pedidoValidator;
     
-    public PedidoServiceImpl(PedidoRepository repository, PedidoMapper mapper){
+    public PedidoServiceImpl(PedidoRepository repository, PedidoMapper mapper, PedidoValidator pedidoValidator){
         this.repository=repository;
         this.mapper = mapper;
+        this.pedidoValidator = pedidoValidator;
     }
     
     @Override
@@ -47,7 +49,7 @@ public class PedidoServiceImpl implements PedidoService {
 
     @Override
     public PedidoDTO create(PedidoDTO obj) {
-    	PedidoValidator.save(obj);
+        pedidoValidator.validarSubtotalesDetalle(obj);
     	Pedido entidad = mapper.toEntity(obj);
     	entidad.setFecha(LocalDate.now());
     	BigDecimal total = obj.getDetalles().stream()
@@ -60,7 +62,7 @@ public class PedidoServiceImpl implements PedidoService {
 
     @Override
     public PedidoDTO update(Long id, PedidoDTO obj) {
-        PedidoValidator.save(obj);
+        pedidoValidator.validarSubtotalesDetalle(obj);
      
         // Buscar el pedido existente y guardar la fecha original
         Pedido pedidoExistente = repository.findById(id).orElseThrow(() -> new NoDataFoundException("No existe un registro con ese ID"));

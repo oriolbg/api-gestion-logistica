@@ -9,7 +9,6 @@ import erp.gestion.apilogistica.exception.ValidateException;
 import erp.gestion.apilogistica.mapper.UsuarioMapper;
 import erp.gestion.apilogistica.repository.UsuarioRepository;
 import erp.gestion.apilogistica.service.UsuarioService;
-import erp.gestion.apilogistica.validator.UsuarioValidator;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -50,7 +49,6 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public UsuarioDTO create(UsuarioDTO obj) {
-    	UsuarioValidator.save(obj); 
     	if(repository.findByEmail(obj.getEmail()).isPresent()) {
     		throw new ValidateException("El email ya está registrado");
     	}
@@ -62,7 +60,6 @@ public class UsuarioServiceImpl implements UsuarioService {
 
     @Override
     public UsuarioDTO update(Integer id, UsuarioDTO obj) {
-        UsuarioValidator.save(obj);
      
         Usuario entidad = repository.findById(id).orElseThrow(() -> new NoDataFoundException("No existe un registro con ese ID"));
      

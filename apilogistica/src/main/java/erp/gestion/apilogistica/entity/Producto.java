@@ -19,7 +19,7 @@ public class Producto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(length = 50, nullable = true)
+    @Column(length = 50, nullable = false)
     private String codigo;
     
     @Column(length = 70, nullable = false)
