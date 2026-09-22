@@ -2,7 +2,7 @@ package erp.gestion.apilogistica.controller;
 
 
 import erp.gestion.apilogistica.entity.Unidad;
-import erp.gestion.apilogistica.service.impl.UnidadServiceImpl;
+import erp.gestion.apilogistica.service.UnidadService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,9 +16,9 @@ import java.util.List;
 @RequestMapping("api/unidades")
 public class UnidadController {
 	
-    private final UnidadServiceImpl service;
+    private final UnidadService service;
 
-    public UnidadController(UnidadServiceImpl service){
+    public UnidadController(UnidadService service){
         this.service=service;
     }
     

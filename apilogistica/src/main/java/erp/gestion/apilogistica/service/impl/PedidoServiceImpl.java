@@ -64,21 +64,20 @@ public class PedidoServiceImpl implements PedidoService {
      
         // Buscar el pedido existente y guardar la fecha original
         Pedido pedidoExistente = repository.findById(id).orElseThrow(() -> new NoDataFoundException("No existe un registro con ese ID"));
-     
-        LocalDate fechaOriginal = pedidoExistente.getFecha();  // Guardar fecha original
-     
-        // Convertir DTO a entidad
+
+        // Convertir DTO a Nueva Entidad para actualizar datos
         Pedido entidad = mapper.toEntity(obj);
-        entidad.setId(id);
-        entidad.setFecha(fechaOriginal);  //Restaurar fecha original
-     
+
         // Calcular total
         BigDecimal total = obj.getDetalles().stream()
                 .map(item -> item.getPrecioUnitario().multiply(BigDecimal.valueOf(item.getCantidad())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-        entidad.setTotal(total);
+
+        //Actualizar pedido existente
+        pedidoExistente.setDetalles(entidad.getDetalles());
+        pedidoExistente.setTotal(total);
      
-        Pedido saved = repository.save(entidad);
+        Pedido saved = repository.save(pedidoExistente);
         return mapper.toDTO(saved);
     }
 

@@ -23,7 +23,7 @@ public class Cliente {
 	@Column(name = "tipo_documento", length = 20, nullable = false)
 	private TipoDocumento tipoDocumento;
 	
-	@Column(name = "numero_documento", length = 15, nullable = false)
+	@Column(name = "numero_documento", unique = true, length = 15, nullable = false)
 	private String numeroDocumento;
 	
 	@Column(length = 100)

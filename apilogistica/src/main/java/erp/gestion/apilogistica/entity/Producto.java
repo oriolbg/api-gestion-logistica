@@ -37,7 +37,10 @@ public class Producto {
     @Column(name = "codimp", nullable = false)
     private String codImp;
 
-    @Column(name = "precio_unitario", precision = 8, scale = 2, nullable = false)
+    @Column(name = "precio_base", precision = 8, scale = 2, nullable = false)
+    private BigDecimal precioBase;
+
+    @Column(name = "precio_unitario", precision = 10, scale = 2, nullable = false)
     private BigDecimal precioUnitario;
 
     private LocalDate fechaAlta;
