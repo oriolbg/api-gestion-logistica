@@ -1,6 +1,5 @@
 package erp.gestion.apilogistica.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,18 +19,14 @@ public class Producto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     
-    @Column(name = "unidad_id", length = 3, nullable = false)
-    private String unidadId;
-    
     @Column(length = 50, nullable = true)
     private String codigo;
     
     @Column(length = 70, nullable = false)
     private String descripcion;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "unidad_id", referencedColumnName = "id", insertable = false, updatable = false)
-    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "unidad_id", nullable = false)
     private Unidad unidad;
 
     @Column(name = "codimp", nullable = false)

@@ -4,9 +4,9 @@ package erp.gestion.apilogistica.mapper;
 
 import erp.gestion.apilogistica.dto.ProductoDTO;
 import erp.gestion.apilogistica.entity.Producto;
+import erp.gestion.apilogistica.entity.Unidad;
 import org.springframework.stereotype.Component;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 
 @Component
@@ -20,8 +20,8 @@ public class ProductoMapper extends GenericMapper<Producto, ProductoDTO>{
                 .id(entity.getId())
                 .codigo(entity.getCodigo())
                 .descripcion(entity.getDescripcion())
-                .unidadId(entity.getUnidadId())
-                .unidadNombre(entity.getUnidad() != null ? entity.getUnidad().getDescripcion():null)
+                .unidadId(entity.getUnidad() != null ? entity.getUnidad().getId() : null)
+                .unidadNombre(entity.getUnidad() != null ? entity.getUnidad().getDescripcion() : null)
                 .codImp(entity.getCodImp())
                 .precioUnitario(entity.getPrecioUnitario())
                 .fechaAlta(entity.getFechaAlta())
@@ -39,9 +39,9 @@ public class ProductoMapper extends GenericMapper<Producto, ProductoDTO>{
                 .codigo(dto.getCodigo())
                 .descripcion(dto.getDescripcion())
                 .precioUnitario(dto.getPrecioUnitario())
-                .unidadId(dto.getUnidadId())
+                .unidad(dto.getUnidadId() != null ? Unidad.builder().id(dto.getUnidadId()).build() : null)
                 .codImp(dto.getCodImp())
-                .fechaAlta(dto.getFechaAlta() != null ? dto.getFechaAlta():LocalDate.now())
+                .fechaAlta(dto.getFechaAlta() != null ? dto.getFechaAlta() : LocalDate.now())
                 .activo(dto.isActivo())
                 .build();
     }

@@ -4,9 +4,12 @@ package erp.gestion.apilogistica.service.impl;
 
 import erp.gestion.apilogistica.dto.ProductoDTO;
 import erp.gestion.apilogistica.entity.Producto;
+import erp.gestion.apilogistica.entity.Unidad;
 import erp.gestion.apilogistica.exception.NoDataFoundException;
+import erp.gestion.apilogistica.exception.ValidateException;
 import erp.gestion.apilogistica.mapper.ProductoMapper;
 import erp.gestion.apilogistica.repository.ProductoRepository;
+import erp.gestion.apilogistica.repository.UnidadRepository;
 import erp.gestion.apilogistica.service.ProductoService;
 import erp.gestion.apilogistica.validator.ProductoValidator;
 import org.springframework.data.domain.Page;
@@ -18,11 +21,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class ProductoServiceImpl implements ProductoService {
     
-	private final ProductoRepository repository;
+    private final ProductoRepository repository;
+    private final UnidadRepository unidadRepository;
     private final ProductoMapper mapper;
     
-    public ProductoServiceImpl(ProductoRepository repository, ProductoMapper mapper){
-        this.repository=repository;
+    public ProductoServiceImpl(ProductoRepository repository, UnidadRepository unidadRepository, ProductoMapper mapper){
+        this.repository = repository;
+        this.unidadRepository = unidadRepository;
         this.mapper = mapper;
     }
     
@@ -47,7 +52,10 @@ public class ProductoServiceImpl implements ProductoService {
     @Override
     public ProductoDTO create(ProductoDTO obj) {
     	ProductoValidator.save(obj);
+    	Unidad unidad = unidadRepository.findById(obj.getUnidadId())
+    			.orElseThrow(() -> new ValidateException("La unidad especificada no existe"));
     	Producto entidad = mapper.toEntity(obj);
+    	entidad.setUnidad(unidad);
     	Producto saved = repository.save(entidad);
         return mapper.toDTO(saved);
     }
@@ -56,10 +64,13 @@ public class ProductoServiceImpl implements ProductoService {
     public ProductoDTO update(Long id, ProductoDTO obj) {
     	ProductoValidator.save(obj);
     	Producto entidad = repository.findById(id).orElseThrow(() -> new NoDataFoundException("No existe un registro con ese ID"));
+    	Unidad unidad = unidadRepository.findById(obj.getUnidadId())
+    			.orElseThrow(() -> new ValidateException("La unidad especificada no existe"));
+    	
     	entidad.setCodigo(obj.getCodigo());
     	entidad.setDescripcion(obj.getDescripcion());
     	entidad.setPrecioUnitario(obj.getPrecioUnitario());
-    	entidad.setUnidadId(obj.getUnidadId());
+    	entidad.setUnidad(unidad);
 
         Producto saved = repository.save(entidad);
         return mapper.toDTO(saved);
