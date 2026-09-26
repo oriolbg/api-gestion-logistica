@@ -1,0 +1,43 @@
+spring:
+  # La URL será reemplazada dinámicamente por @DynamicPropertySource en cada test
+  datasource:
+    url: jdbc:mysql://localhost:3306/test_db
+    username: test
+    password: test
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    show-sql: false
+    hibernate:
+      ddl-auto: create-drop    # Crea el esquema al iniciar y lo destruye al finalizar
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  threads:
+    virtual:
+      enabled: true
+
+# Desactivar Swagger en tests (no necesario y ralentiza el arranque)
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false
+
+server:
+  port: 0   # Puerto aleatorio para evitar conflictos en CI/CD
+
+jwt:
+  secret:
+    key: 27b76aaf16e8d087e3d0da8ad983d7d2c1192592224dc5b19c784374ef9cf382
+  expiration:
+    time: 86400000
+
+logging:
+  level:
+    root: WARN
+    erp.gestion.apilogistica: INFO
+    org.springframework.security: WARN
+    org.hibernate.SQL: WARN
+    org.testcontainers: INFO
