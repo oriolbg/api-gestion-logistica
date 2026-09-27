@@ -22,6 +22,9 @@ public class PedidoDTO {
     private Long id;
     private LocalDate fecha;
 
+    @NotBlank(message = "El codigo del almacen es requerido")
+    private String codigoAlmacen;
+
     @NotBlank(message = "El cliente es requerido")
     private Long clienteId;
     private String clienteNombre;
@@ -37,6 +40,9 @@ public class PedidoDTO {
     @Positive(message = "El correlativo debe ser mayor a cero")
     private int correlativo;
     private BigDecimal total;
+
+    private Integer idGestion;
+    private Integer idEstado;
 
     @NotEmpty(message = "El pedido debe contener al menos un detalle")
     @Valid // <-- ¡Crucial!: Activa la validación en cascada para cada elemento de la lista

@@ -1,9 +1,11 @@
 package erp.gestion.apilogistica.config;
 
 
+import erp.gestion.apilogistica.entity.Almacen;
 import erp.gestion.apilogistica.entity.Rol;
 import erp.gestion.apilogistica.entity.TipoComprobante;
 import erp.gestion.apilogistica.entity.Unidad;
+import erp.gestion.apilogistica.repository.AlmacenRepository;
 import erp.gestion.apilogistica.repository.RolRepository;
 import erp.gestion.apilogistica.repository.TipoComprobanteRepository;
 import erp.gestion.apilogistica.repository.UnidadRepository;
@@ -16,7 +18,7 @@ public class DataInitializer {
 	
 	@SuppressWarnings("unused")
 	@Bean
-	CommandLineRunner initData(RolRepository usuarioRepo, TipoComprobanteRepository tipoCompRepo, UnidadRepository unidadRepo) {
+	CommandLineRunner initData(RolRepository usuarioRepo, TipoComprobanteRepository tipoCompRepo, UnidadRepository unidadRepo, AlmacenRepository almacenRepo) {
 		return args -> {
 			//Roles usuarios
 			insertarRol(usuarioRepo, 1, "ADMIN");
@@ -35,6 +37,12 @@ public class DataInitializer {
 			insertarUnidad(unidadRepo, "LT", "Litro");
 			insertarUnidad(unidadRepo, "BO", "Botella");
 			insertarUnidad(unidadRepo, "BX", "Caja");
+
+			//Almacenes
+			insertarAlmacen(almacenRepo, "1000", "Almacen Central");
+			insertarAlmacen(almacenRepo, "2000", "Tienda Madrid");
+			insertarAlmacen(almacenRepo, "5000", "Tienda Barcelona");
+			insertarAlmacen(almacenRepo, "9999", "Tienda Online");
 		};
 	}
 	
@@ -61,5 +69,14 @@ public class DataInitializer {
 					.descripcion(descripcion)
 					.build());
 		}	
+	}
+
+	private void insertarAlmacen(AlmacenRepository repo, String codigo, String descripcion) {
+		if(!repo.existsById(codigo)) {
+			repo.save(Almacen.builder()
+					.codigo_almacen(codigo)
+					.descripcion_almacen(descripcion)
+					.build());
+		}
 	}
 }

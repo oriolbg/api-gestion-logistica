@@ -1,6 +1,7 @@
 package erp.gestion.apilogistica.mapper;
 
 import erp.gestion.apilogistica.dto.PedidoDTO;
+import erp.gestion.apilogistica.entity.Almacen;
 import erp.gestion.apilogistica.entity.Cliente;
 import erp.gestion.apilogistica.entity.Pedido;
 import erp.gestion.apilogistica.entity.TipoComprobante;
@@ -10,14 +11,17 @@ import org.mapstruct.*;
 public interface PedidoMapper extends GenericMapper<Pedido, PedidoDTO> {
 
     @Override
+    @Mapping(target = "codigoAlmacen", source = "almacen.codigo_almacen")
     @Mapping(target = "clienteId", source = "cliente.id")
     @Mapping(target = "clienteNombre", source = "cliente.nombre")
     @Mapping(target = "tipoComprobanteCodigo", source = "tipoComprobante.codigo")
     @Mapping(target = "tipoComprobanteDescripcion", source = "tipoComprobante.descripcion")
     @Mapping(target = "productoNombre", ignore = true)
+    @Mapping(target = "fecha", ignore = true)
     PedidoDTO toDTO(Pedido entity);
 
     @Override
+    @Mapping(target = "almacen", source = "codigoAlmacen")                 // Utiliza mapAlmacenFromId
     @Mapping(target = "cliente", source = "clienteId")                     // Utiliza mapClienteFromId
     @Mapping(target = "tipoComprobante", source = "tipoComprobanteCodigo") // Utiliza mapTipoComprobanteFromCodigo
     Pedido toEntity(PedidoDTO dto);
@@ -25,7 +29,7 @@ public interface PedidoMapper extends GenericMapper<Pedido, PedidoDTO> {
     @Override
     @InheritConfiguration(name = "toEntity")
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "fecha", ignore = true)
+    @Mapping(target = "almacen", source = "codigoAlmacen")
     void updateEntityFromDto(PedidoDTO dto, @MappingTarget Pedido entity);
 
     @AfterMapping
@@ -48,5 +52,12 @@ public interface PedidoMapper extends GenericMapper<Pedido, PedidoDTO> {
         TipoComprobante tc = new TipoComprobante();
         tc.setCodigo(codigo);
         return tc;
+    }
+
+    default Almacen mapAlmacenFromCodigo(String codigo) {
+        if (codigo == null) return null;
+        Almacen al = new Almacen();
+        al.setCodigo_almacen(codigo);
+        return al;
     }
 }

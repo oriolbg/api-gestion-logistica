@@ -16,11 +16,15 @@ import java.util.List;
 @Entity
 @Table(name = "pedidos")
 public class Pedido {
-	
+
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "codigo_almacen", nullable = false)
+	private Almacen almacen;
+
 	private LocalDate fecha;
 	
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -35,10 +39,17 @@ public class Pedido {
 	private String serie;
 	
 	private int correlativo;
-	
+
 	@Column(precision = 8, scale = 2)
 	private BigDecimal total;
+
+	@Column(name = "estado_id_gestion", nullable = false)
+	private Integer idGestion;
+
+	@Column(name = "estado_id_estado", nullable = false)
+	private Integer idEstado;
 	
+	@Builder.Default
 	@OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<PedidoDetalle> detalles = new ArrayList<>();
 }
